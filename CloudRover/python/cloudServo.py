@@ -1,0 +1,128 @@
+#imports
+import webiopi
+import os
+import time
+from webiopi.devices.serial import Serial
+# Libreria GPIO
+GPIO = webiopi.GPIO
+serial = Serial("ttyACM0", 9600)
+
+# -------------------------------------------------- #
+# Definicion constantes                           #
+# -------------------------------------------------- #
+
+# GPIOs motor izquierdo
+L1=17  # H-Bridge 1
+L2=27 # H-Bridge 2
+
+# GPIOs motor derecho
+R1=10 # H-Bridge 3
+R2=9 # H-Bridge 4
+
+delay_period = 1
+@webiopi.macro
+def getDelay():
+	global delay_period
+	return "%d" % (delay_period)
+	
+@webiopi.macro
+def setDelay(delay):
+	global delay_period 
+	delay_period = int(delay)
+	dts=str(delay_period)
+	if (delay_period==1):
+		serial.writeString("1DL\n")
+	if (delay_period==5):
+		serial.writeString("5DL\n")
+	if (delay_period==10):
+		serial.writeString("10DL\n")
+	if (delay_period==15):
+		serial.writeString("15DL\n")
+	if (delay_period==20):
+		serial.writeString("20DL\n")
+	return delay_period
+		
+		
+
+
+
+# -------------------------------------------------- #
+# Funciones motor izquierdo                          #
+# -------------------------------------------------- #
+
+def left_stop():
+    GPIO.output(L1, GPIO.LOW)
+    GPIO.output(L2, GPIO.LOW)
+    
+
+def left_forward():
+    GPIO.output(L1, GPIO.HIGH)
+    GPIO.output(L2, GPIO.LOW)
+    
+def left_backward():
+    GPIO.output(L1, GPIO.LOW)
+    GPIO.output(L2, GPIO.HIGH)
+
+# -------------------------------------------------- #
+# Funciones motor derecho                            #
+# -------------------------------------------------- #
+
+def right_stop():
+    GPIO.output(R1, GPIO.LOW)
+    GPIO.output(R2, GPIO.LOW)
+
+def right_forward():
+    GPIO.output(R1, GPIO.HIGH)
+    GPIO.output(R2, GPIO.LOW)
+
+def right_backward():
+    GPIO.output(R1, GPIO.LOW)
+    GPIO.output(R2, GPIO.HIGH)
+
+# -------------------------------------------------- #
+# Definicion macros                               #
+# -------------------------------------------------- #
+
+@webiopi.macro
+def go_forward():
+    left_forward()
+    right_forward()
+
+@webiopi.macro
+def go_backward():
+    left_backward()
+    right_backward()
+
+@webiopi.macro
+def turn_left():
+    right_forward()
+
+@webiopi.macro
+def turn_right():
+    left_forward()
+
+@webiopi.macro    
+def stop():
+    left_stop()
+    right_stop()
+    
+# -------------------------------------------------- #
+# Iniciacializacion                                  #
+# -------------------------------------------------- #
+
+def setup():
+# Instalacion GPIOs
+    GPIO.setFunction(L1, GPIO.OUT)
+    GPIO.setFunction(L2, GPIO.OUT)
+
+    GPIO.setFunction(R1, GPIO.OUT)
+    GPIO.setFunction(R2, GPIO.OUT)
+
+
+def destroy():
+    # Resetea las funciones GPIO
+    GPIO.setFunction(L1, GPIO.IN)
+    GPIO.setFunction(L2, GPIO.IN)
+
+    GPIO.setFunction(R1, GPIO.IN)
+    GPIO.setFunction(R2, GPIO.IN)

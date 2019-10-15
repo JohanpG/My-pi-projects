@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>WebIOPi | CloudRover JohanpG</title>
+        <script type="text/javascript" src="/webiopi.js"></script>
+        <script type="text/javascript">
+		webiopi().ready(function() {
+                // Following function will process data received from set/getLightHours macro.
+                var updateDelay = function(macro, args, response) {
+                    var delay = response;
+                    // Following lines use jQuery functions
+                    $("#inputOn").val(delay);
+                    
+                }
+
+                // Immediately call getLightHours macro to update the UI with current values
+                // "getLightHours" refers to macro name
+                // [] is an empty array, because getLightHours macro does not take any argument
+                // updateLightHours is the callback function, defined above
+                webiopi().callMacro("getDelay", [], updateDelay);
+                webiopi().callMacro("stop");
+               // webiopi().callMacro("center1");
+                
+                // Create a button to call setLightHours macro
+                var sendButton = webiopi().createButton("sendButton", "Send",function() {
+                   // Arguments sent to the macro
+                    //var delay= parseFloat[$("#inputOn").val()];
+                    var delay= [$("#inputOn").val()];
+                    var arg = delay;
+                    // Call the macro
+                    webiopi().callMacro("setDelay",arg,updateDelay);
+                });
+
+                // Append the button to the controls box using a jQuery function
+                $("#content1").append(sendButton);
+                $("#content1").append("<br>");
+
+               
+                
+                // Create a button to call setLightHours macro
+                var leftButton = webiopi().createButton("leftButton", "Left",function() {
+					// // Arguments sent to the macro
+					//var delay = [$("#inputOn").val()];
+					// Call the macro
+					webiopi().callMacro("turn_left");
+					});
+
+                // Append the button to the controls box
+                $("#content").append("<br>");
+                $("#content").append("<br>");
+                $("#content").append("<br>");
+                $("#content").append(leftButton);
+					
+                var rightButton = webiopi().createButton("rightButton", "Right",function() {
+					// // Arguments sent to the macro
+					//var delay = [$("#inputOn").val()];
+					// Call the macro
+					webiopi().callMacro("turn_right");
+					});
+
+                // Append the button to the controls box
+                $("#content2").append("<br>");
+                $("#content2").append("<br>");
+                $("#content2").append("<br>");
+                $("#content2").append("<br>");
+                $("#content2").append(rightButton);
+                
+                var centerButton = webiopi().createButton("centerButton", "Stop",function() {
+					// Arguments sent to the macro
+					var delay = [$("#inputOn").val()];
+					// Call the macro
+					webiopi().callMacro("stop");
+					});
+
+                // Append the button to the controls box
+                //$("#content1").append("<br>");
+                $("#content1").append("<br>");
+                $("#content1").append(centerButton);
+                
+                var ledOnButton = webiopi().createButton("ledOnButton", "On",function() {
+					// Arguments sent to the macro
+					
+					// Call the macro
+					webiopi().callMacro("go_forward");
+					
+					});
+				$("#content").append("<br>");
+				$("#content").append("<br>");	
+				$("#content").append(ledOnButton);
+				
+				var ledOffButton = webiopi().createButton("ledOffButton", "Off",function() {
+					// Arguments sent to the macro
+					
+					// Call the macro
+					webiopi().callMacro("go_backward");
+					});
+				$("#content1").append("<br>");	
+				$("#content1").append("<br>");
+				$("#content1").append(ledOffButton);
+
+                // Refresh GPIO buttons
+                // pass true to refresh repeatedly of false to refresh once
+                webiopi().refreshGPIO(true);
+
+        });
+        
+
+                
+        </script>
+        <style type="text/css">
+                button {
+					-moz-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+					-webkit-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+					box-shadow:inset 0px 1px 0px 0px #cae3fc;
+					background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #4197ee) );
+					background:-moz-linear-gradient( center top, #79bbff 5%, #4197ee 100% );
+					filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#4197ee');
+					background-color:#79bbff;
+					-webkit-border-top-left-radius:20px;
+					-moz-border-radius-topleft:20px;
+					border-top-left-radius:20px;
+					-webkit-border-top-right-radius:20px;
+					-moz-border-radius-topright:20px;
+					border-top-right-radius:20px;
+					-webkit-border-bottom-right-radius:20px;
+					-moz-border-radius-bottomright:20px;
+					border-bottom-right-radius:20px;
+					-webkit-border-bottom-left-radius:20px;
+					-moz-border-radius-bottomleft:20px;
+					border-bottom-left-radius:20px;
+					text-indent:0;
+					border: none;
+					display:inline-block;
+					color:#ffffff;
+					font-family:Arial;
+					font-size:15px;
+					font-weight:bold;
+					font-style:normal;
+					height:50px;
+					line-height:50px;
+					width:100px;
+					text-decoration:none;
+					text-align:center;
+					text-shadow:1px 1px 0px #287ace;
+				}
+							button#ledOffButton {
+					background: #CCC;
+					color:#fff; 			
+								}
+							button#ledOnButton {
+					background: #90C;
+					color:#fff; 			
+								}
+							
+							button#sendButton {
+					background: #CCC;
+					color:#fff; 			
+								}
+			
+                
+        </style>
+</head>
+<body style= "background-color:#5882FA" >
+<div id ="container" style="width:1400px">  
+<div id="header" style="background-color:#5882FA;">
+<h1 style="margin-bottom:0;color:#FFFFFF;font-family:arial;">JohanpG CloudServo</h1></div>
+
+<div id="menu" style="background-color:#58ACFA;height:500px;width:150px;float:left;">
+<b style="color:#FFFFFF;">Set Step Delay:<br>
+<br>Controls</b></div>	
+<div id="content" style="background-color:#EEEEEE;height:500px;width:160px;float:left">
+<input type="text" id="inputOn" ></div>
+
+<div id="content1" style="background-color:#EEEEEE;height:500px;width:160px;float:left"></div>
+<div id="content2" style="background-color:#EEEEEE;height:500px;width:160px;float:left"></div>
+
+<div id="content3" style="background-color:#EEEEEE;height:500px;width:660px;float:left">
+	<iframe src="http://192.168.0.30:9000/javascript_simple.html" width="100%" height="100%">
+<!--<img width="320" height="240" src= "http://192.168.0.30:9000/javascript_simple.html"--> <br></div>
+
+<div id="footer" style="background-color:#FFFFFF;clear:both;text-align:center;">johanpg27@gmail.com</div>
+</div>
+
+</body>
+</html>
